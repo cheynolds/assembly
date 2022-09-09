@@ -18,5 +18,5 @@ syscall
 #load immmediate, set number 10 in register v0 to exit
 li $v0, 10
 
-#final system call to exit program
+#final system call to $v0 exits program
 syscall
