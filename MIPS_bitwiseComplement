@@ -1,0 +1,42 @@
+# Program File: CS40 - Program3.12-2.asm
+# Author: Chris Reynolds, #770-230
+# Purpose: Prompt user for number, output bitwise complement (NOT)
+
+
+.data
+
+	userQuestion:	.asciiz  "\n Please enter a number.\n"
+	outputPrepend:  .asciiz "\n The bitwise complement (NOT) = "
+	
+.text
+
+main:	
+# system call to prompt user input
+	li $v0, 4
+	la $a0, userQuestion 
+	syscall
+	
+# system call to read user input
+	li $v0, 5
+	syscall
+	
+# save userInput to t1
+        move $t1, $v0
+	
+# complete operations using XOR with -1 as the given NOT
+	li $t2, -1
+	xor $t3, $t1, $t2
+
+# system call to console; add prepend statement
+	li $v0, 4
+	la $a0, outputPrepend
+	syscall
+
+# system call to console; output NOT
+	li $v0, 1
+	move $a0, $t3
+	syscall
+
+# system call, exit program
+	li $v0, 10
+	syscall
