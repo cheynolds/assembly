@@ -1,0 +1,61 @@
+# Program File: CS40 - Program3.12-3.asm
+# Author: CHEYNOLDS
+# Purpose: Prompt user for number, output 2's complement, use XOR/ADD only
+
+
+.data
+
+	userQuestion:	.asciiz  "\n Please enter a number.\n"
+	outputPrepend_hex:  .asciiz "\n The 2's complement in HEX = "
+	outputPrepend_decimal:  .asciiz "\n\n The 2's complement in DECIMAL = "
+  
+.text
+
+main:	
+# system call to prompt user input
+	li $v0, 4
+	la $a0, userQuestion 
+	syscall
+	
+# system call to read user input
+	li $v0, 5
+	syscall
+	
+# save userInput to $t0
+        move $t0, $v0
+	
+# OPERATIONS
+
+	# move value 0xffffff (hex -1) into $t3
+	add $t3, $zero, 0xffffffff
+	# xor with -1, 1's complement of $t0
+	xor $t0, $t0, $t3
+	# move value 1 into $t4
+	add $t4, $zero,1
+	# add 1 to 1's complement of $t0 results in 2's complement value
+	add $t0, $t0, $t4
+
+
+# system call to console; add prepend statement hex
+	li $v0, 4
+	la $a0, outputPrepend_hex
+	syscall
+
+# system call to console; output hex syscall code 34
+	li $v0, 34
+	move $a0, $t0
+	syscall
+
+# system call to console; add prepend statement decimal
+	li $v0, 4
+	la $a0, outputPrepend_decimal
+	syscall
+	
+# system call to console; output decimal syscall code 1
+	li $v0, 1
+	move $a0, $t0
+	syscall
+	
+# system call, exit program
+	li $v0, 10
+	syscall
