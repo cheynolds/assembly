@@ -1,0 +1,85 @@
+# Program File: MIPS_base8_base5.asm
+# Author: @CHEYNOLDS
+# Purpose: Prompt user for base 8 number, output base 5 number.
+
+.data
+
+	userNumber:	.asciiz  "\n Please enter a base 8 number.\n"
+	outputPrepend_base5:  .asciiz "\n Your number in base 5 = "
+	
+.text
+
+main:	
+# system call to prompt user input
+	li $v0, 4
+	la $a0, userNumber
+	syscall
+	
+# system call to read user input
+	li $v0, 5
+	syscall
+	
+# save userInput to $t0
+        move $t0, $v0
+
+# set variables
+	li $t1, 0 #N10
+	li $t2, 1 #P
+	li $t3, 0 #N5
+	li $t4, 1 #K	
+	li $t5, 0 #R
+	li $t8, 0 #A
+	li $t9, 10 #base 10
+	
+	
+#n8 - n10
+L1: 
+	#while $t0 is greater than 0
+	beq $t0, $zero, L2 
+	#R = N8 mod 10
+	div $t0,  $t9
+	mfhi $t6
+	move $t5, $t6 
+	#NB = NB - R	
+	sub $t0, $t0, $t5 
+	#NB = NB/10
+	div $t0, $t0, $t9
+	#N10 = N10 + (R x P)
+	mul $t7, $t5, $t2 
+	add $t1, $t1, $t7
+	#P = P*8
+	mul $t2, $t2, 8
+	j L1
+	
+L2:
+	beq $t1, $zero, L3
+	li $t0, 5
+	#A = N10 mod 5
+	div $t1, $t0
+	mfhi $t6
+	move $t8, $t6
+	#N5 = N5 + (A*K)
+	mul $t7, $t8, $t4
+	add $t3, $t3, $t7
+	#N10 = N10 / 5
+	div $t1, $t1, $t0
+	#K = 10*k
+	mul $t4, $t4, $t9
+	j L2
+	
+L3:
+
+# system call to console; add prepend statement decimal
+	li $v0, 4
+	la $a0, outputPrepend_base5
+	syscall
+	
+# system call to console; output decimal syscall code 1
+	li $v0, 1
+	move $a0, $t3
+	syscall
+	
+# system call, exit program
+	li $v0, 10
+	syscall
+
